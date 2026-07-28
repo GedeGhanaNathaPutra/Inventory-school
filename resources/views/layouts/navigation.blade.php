@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('rekap.3-pihak')" :active="request()->routeIs('rekap.*')">
                         {{ __('Rekap 3 Pihak') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('stok.index')" :active="request()->routeIs('stok.*')">
+                        {{ __('Stok Barang') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -87,6 +90,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('rekap.3-pihak')" :active="request()->routeIs('rekap.*')">
                 {{ __('Rekap 3 Pihak') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('stok.index')" :active="request()->routeIs('stok.*')">
+                {{ __('Stok Barang') }}
             </x-responsive-nav-link>
         </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Ruangan;
 use App\Models\SerahTerima;
+use App\Models\StokMutasi;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -80,6 +81,16 @@ class SerahTerimaController extends Controller
 
             foreach ($serahTerima->items as $item) {
                 $item->barang->update(['ruangan_id' => $serahTerima->ruangan_tujuan_id]);
+
+                StokMutasi::create([
+                    'barang_id' => $item->barang_id,
+                    'jenis' => 'keluar',
+                    'jumlah' => $item->jumlah,
+                    'referensi_tipe' => 'serah_terima',
+                    'referensi_id' => $serahTerima->id,
+                    'tanggal' => $serahTerima->tanggal_serah_terima,
+                    'keterangan' => 'Serah terima ke ' . ($serahTerima->keUser?->name ?? ''),
+                ]);
             }
         });
 
