@@ -27,6 +27,11 @@
                     <x-nav-link :href="route('stok.index')" :active="request()->routeIs('stok.*')">
                         {{ __('Stok Barang') }}
                     </x-nav-link>
+                    @if (!in_array(Auth::user()->role, ['ka_prodi']))
+                        <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                            {{ __('Laporan') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -94,6 +99,11 @@
             <x-responsive-nav-link :href="route('stok.index')" :active="request()->routeIs('stok.*')">
                 {{ __('Stok Barang') }}
             </x-responsive-nav-link>
+            @if (!in_array(Auth::user()->role, ['ka_prodi']))
+                <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                    {{ __('Laporan') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

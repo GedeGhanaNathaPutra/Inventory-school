@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KondisiController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\SerahTerimaController;
@@ -45,6 +46,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/{barang}', [StokController::class, 'show'])->name('show');
         Route::get('/create/mutasi', [StokController::class, 'create'])->name('create');
         Route::post('/', [StokController::class, 'store'])->name('store');
+    });
+
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('/', [LaporanController::class, 'index'])->name('index');
+        Route::get('/kategori', [LaporanController::class, 'kategori'])->name('kategori');
+        Route::get('/kondisi', [LaporanController::class, 'kondisi'])->name('kondisi');
+        Route::get('/lokasi', [LaporanController::class, 'lokasi'])->name('lokasi');
+        Route::get('/pengadaan', [LaporanController::class, 'pengadaan'])->name('pengadaan');
     });
 });
 
