@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('serah-terima.index')" :active="request()->routeIs('serah-terima.*')">
                         {{ __('Serah Terima') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('rekap.3-pihak')" :active="request()->routeIs('rekap.*')">
+                        {{ __('Rekap 3 Pihak') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -81,6 +84,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('serah-terima.index')" :active="request()->routeIs('serah-terima.*')">
                 {{ __('Serah Terima') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('rekap.3-pihak')" :active="request()->routeIs('rekap.*')">
+                {{ __('Rekap 3 Pihak') }}
             </x-responsive-nav-link>
         </div>
 

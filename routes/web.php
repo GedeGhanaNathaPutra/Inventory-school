@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RekapController;
 use App\Http\Controllers\SerahTerimaController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/{serahTerima}/acknowledge', [SerahTerimaController::class, 'acknowledge'])->name('acknowledge');
         Route::get('/{serahTerima}/pdf', [SerahTerimaController::class, 'pdf'])->name('pdf');
     });
+
+    Route::get('/rekap-3-pihak', [RekapController::class, 'index'])->name('rekap.3-pihak');
 });
 
 require __DIR__.'/auth.php';
