@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\SerahTerimaController;
@@ -31,6 +32,12 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/rekap-3-pihak', [RekapController::class, 'index'])->name('rekap.3-pihak');
+
+    Route::prefix('kondisi')->name('kondisi.')->group(function () {
+        Route::get('/{barang}/create', [KondisiController::class, 'create'])->name('create');
+        Route::post('/{barang}', [KondisiController::class, 'store'])->name('store');
+        Route::get('/{barang}/history', [KondisiController::class, 'history'])->name('history');
+    });
 });
 
 require __DIR__.'/auth.php';

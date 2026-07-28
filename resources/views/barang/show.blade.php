@@ -24,7 +24,11 @@
                     <tr><td class="py-2 font-semibold">Keterangan</td><td class="py-2">{{ $barang->keterangan ?? '-' }}</td></tr>
                 </table>
 
-                <div class="mt-6 flex gap-2">
+                <div class="mt-6 flex flex-wrap gap-2">
+                    @if (in_array(Auth::user()->role, ['ka_tu', 'waka_sarpras', 'ka_prodi']) && $barang->status === 'aktif')
+                        <a href="{{ route('kondisi.create', $barang) }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Lapor Kondisi</a>
+                    @endif
+                    <a href="{{ route('kondisi.history', $barang) }}" class="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200">Riwayat Kondisi</a>
                     @if (Auth::user()->role === 'ka_tu' && $barang->status === 'aktif')
                         <a href="{{ route('barang.edit', $barang) }}" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Edit</a>
                     @endif
