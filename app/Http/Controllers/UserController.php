@@ -57,7 +57,7 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:20',
         ]);
 
-        if ($data['password']) {
+        if (!empty($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         } else {
             unset($data['password']);
