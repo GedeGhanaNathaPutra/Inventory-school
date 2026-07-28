@@ -12,7 +12,7 @@ class SerahTerima extends Model
 
     protected $fillable = [
         'nomor_berita_acara', 'dari_user_id', 'ke_user_id',
-        'tanggal_serah_terima', 'status', 'catatan', 'dibuat_oleh',
+        'ruangan_tujuan_id', 'tanggal_serah_terima', 'status', 'catatan', 'dibuat_oleh',
     ];
 
     protected function casts(): array
@@ -33,6 +33,11 @@ class SerahTerima extends Model
     public function dibuatOleh(): BelongsTo
     {
         return $this->belongsTo(User::class, 'dibuat_oleh');
+    }
+
+    public function ruanganTujuan(): BelongsTo
+    {
+        return $this->belongsTo(Ruangan::class, 'ruangan_tujuan_id');
     }
 
     public function items(): HasMany
