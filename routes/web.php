@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\KartuInventarisController;
 use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PengajuanController;
@@ -70,6 +71,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/{pengajuan}/mark-diserahkan-waka', [PengajuanController::class, 'markDiserahkanWaka'])->name('mark-diserahkan-waka');
         Route::post('/{pengajuan}/mark-diserahkan-pengguna', [PengajuanController::class, 'markDiserahkanPengguna'])->name('mark-diserahkan-pengguna');
         Route::post('/{pengajuan}/mark-didata', [PengajuanController::class, 'markDidata'])->name('mark-didata');
+    });
+
+    Route::prefix('kartu')->name('kartu.')->group(function () {
+        Route::get('/', [KartuInventarisController::class, 'index'])->name('index');
+        Route::get('/{ruangan}', [KartuInventarisController::class, 'show'])->name('show');
+        Route::post('/{ruangan}/kebutuhan', [KartuInventarisController::class, 'updateKebutuhan'])->name('update-kebutuhan');
+        Route::get('/{ruangan}/pdf', [KartuInventarisController::class, 'pdf'])->name('pdf');
     });
 });
 

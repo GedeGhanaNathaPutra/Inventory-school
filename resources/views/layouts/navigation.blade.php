@@ -37,6 +37,9 @@
                             {{ __('Pengajuan') }}
                         </x-nav-link>
                     @endif
+                    <x-nav-link :href="route('kartu.index')" :active="request()->routeIs('kartu.*')">
+                        {{ __('Kartu Inventaris') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -114,6 +117,9 @@
                     {{ __('Pengajuan') }}
                 </x-responsive-nav-link>
             @endif
+            <x-responsive-nav-link :href="route('kartu.index')" :active="request()->routeIs('kartu.*')">
+                {{ __('Kartu Inventaris') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
