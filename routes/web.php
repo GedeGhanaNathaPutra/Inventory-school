@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\SerahTerimaController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -78,6 +79,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/{ruangan}', [KartuInventarisController::class, 'show'])->name('show');
         Route::post('/{ruangan}/kebutuhan', [KartuInventarisController::class, 'updateKebutuhan'])->name('update-kebutuhan');
         Route::get('/{ruangan}/pdf', [KartuInventarisController::class, 'pdf'])->name('pdf');
+    });
+
+    Route::middleware('role:kepsek,ka_tu')->group(function () {
+        Route::prefix('user')->name('user.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('/create', [UserController::class, 'create'])->name('create');
+            Route::post('/', [UserController::class, 'store'])->name('store');
+            Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+            Route::put('/{user}', [UserController::class, 'update'])->name('update');
+            Route::post('/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('toggle-active');
+        });
     });
 });
 

@@ -40,6 +40,11 @@
                     <x-nav-link :href="route('kartu.index')" :active="request()->routeIs('kartu.*')">
                         {{ __('Kartu Inventaris') }}
                     </x-nav-link>
+                    @if (in_array(Auth::user()->role, ['kepsek', 'ka_tu']))
+                        <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.*')">
+                            {{ __('User') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -120,6 +125,11 @@
             <x-responsive-nav-link :href="route('kartu.index')" :active="request()->routeIs('kartu.*')">
                 {{ __('Kartu Inventaris') }}
             </x-responsive-nav-link>
+            @if (in_array(Auth::user()->role, ['kepsek', 'ka_tu']))
+                <x-responsive-nav-link :href="route('user.index')" :active="request()->routeIs('user.*')">
+                    {{ __('User') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
