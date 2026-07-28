@@ -3,6 +3,7 @@
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\SerahTerimaController;
@@ -54,6 +55,21 @@ Route::middleware('auth')->group(function () {
         Route::get('/kondisi', [LaporanController::class, 'kondisi'])->name('kondisi');
         Route::get('/lokasi', [LaporanController::class, 'lokasi'])->name('lokasi');
         Route::get('/pengadaan', [LaporanController::class, 'pengadaan'])->name('pengadaan');
+    });
+
+    Route::prefix('pengajuan')->name('pengajuan.')->group(function () {
+        Route::get('/', [PengajuanController::class, 'index'])->name('index');
+        Route::get('/create', [PengajuanController::class, 'create'])->name('create');
+        Route::post('/', [PengajuanController::class, 'store'])->name('store');
+        Route::get('/{pengajuan}', [PengajuanController::class, 'show'])->name('show');
+
+        Route::post('/{pengajuan}/forward-to-rapbs', [PengajuanController::class, 'forwardToRapbs'])->name('forward-to-rapbs');
+        Route::post('/{pengajuan}/approve', [PengajuanController::class, 'approve'])->name('approve');
+        Route::post('/{pengajuan}/reject', [PengajuanController::class, 'reject'])->name('reject');
+        Route::post('/{pengajuan}/mark-dibelanjakan', [PengajuanController::class, 'markDibelanjakan'])->name('mark-dibelanjakan');
+        Route::post('/{pengajuan}/mark-diserahkan-waka', [PengajuanController::class, 'markDiserahkanWaka'])->name('mark-diserahkan-waka');
+        Route::post('/{pengajuan}/mark-diserahkan-pengguna', [PengajuanController::class, 'markDiserahkanPengguna'])->name('mark-diserahkan-pengguna');
+        Route::post('/{pengajuan}/mark-didata', [PengajuanController::class, 'markDidata'])->name('mark-didata');
     });
 });
 

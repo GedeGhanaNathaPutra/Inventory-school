@@ -32,6 +32,11 @@
                             {{ __('Laporan') }}
                         </x-nav-link>
                     @endif
+                    @if (in_array(Auth::user()->role, ['ka_prodi', 'waka_sarpras', 'kepsek', 'ka_tu']))
+                        <x-nav-link :href="route('pengajuan.index')" :active="request()->routeIs('pengajuan.*')">
+                            {{ __('Pengajuan') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -102,6 +107,11 @@
             @if (!in_array(Auth::user()->role, ['ka_prodi']))
                 <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
                     {{ __('Laporan') }}
+                </x-responsive-nav-link>
+            @endif
+            @if (in_array(Auth::user()->role, ['ka_prodi', 'waka_sarpras', 'kepsek', 'ka_tu']))
+                <x-responsive-nav-link :href="route('pengajuan.index')" :active="request()->routeIs('pengajuan.*')">
+                    {{ __('Pengajuan') }}
                 </x-responsive-nav-link>
             @endif
         </div>
