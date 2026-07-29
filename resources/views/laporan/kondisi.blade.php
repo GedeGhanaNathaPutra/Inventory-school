@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Laporan Per Kondisi</h2>
+        <h2 class="font-semibold text-xl text-foreground leading-tight">Laporan Per Kondisi</h2>
     </x-slot>
 
     <div class="py-6">
@@ -13,13 +13,13 @@
                     <option value="rusak_sedang" @selected(request('kondisi') === 'rusak_sedang')>Rusak Sedang</option>
                     <option value="rusak_berat" @selected(request('kondisi') === 'rusak_berat')>Rusak Berat</option>
                 </select>
-                <button type="submit" class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">Tampilkan</button>
-                <button type="submit" name="export" value="pdf" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">PDF</button>
-                <button type="submit" name="export" value="excel" class="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">Excel</button>
+                <button type="submit" class="px-3 py-1 bg-secondary text-foreground rounded text-sm hover:bg-accent">Tampilkan</button>
+                <button type="submit" name="export" value="pdf" class="px-3 py-1 bg-destructive text-destructive-foreground rounded text-sm hover:bg-destructive/90">PDF</button>
+                <button type="submit" name="export" value="excel" class="px-3 py-1 bg-success text-success-foreground rounded text-sm hover:bg-success/90">Excel</button>
             </form>
 
             @foreach ($data as $kondisi => $items)
-                <div class="bg-white rounded shadow-sm p-4 mb-4">
+                <div class="glass-card p-4 mb-4">
                     <h3 class="font-semibold mb-2">{{ str_replace('_', ' ', $kondisi) }} ({{ $items->count() }} item)</h3>
                     <table class="w-full text-sm">
                         <thead><tr class="border-b text-left"><th class="py-1">Kode</th><th class="py-1">Nama</th><th class="py-1">Kategori</th><th class="py-1">Qty</th><th class="py-1">Ruangan</th></tr></thead>

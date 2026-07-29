@@ -17,7 +17,24 @@ erDiagram
     PENGAJUAN ||--o{ PENGAJUAN_LOG : punya_riwayat
     BARANG ||--o{ STOK_MUTASI : punya_mutasi
     RUANGAN ||--o{ KEBUTUHAN_RUANGAN : punya_catatan_kebutuhan
+    KEBUTUHAN_RUANGAN ||--o| PENGAJUAN : memicu
+    TAHUN_AJARAN ||--o{ KEBUTUHAN_RUANGAN : melingkupi
+    TAHUN_AJARAN ||--o{ PENGAJUAN : melingkupi
+    TAHUN_AJARAN ||--o{ BARANG : melingkupi
+    TAHUN_AJARAN ||--o{ SERAH_TERIMA : melingkupi
 ```
+
+## Tabel `tahun_ajaran`
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id | PK | |
+| nama_tahun_ajaran | varchar unique | contoh `2025/2026` |
+| tanggal_mulai | date | |
+| tanggal_selesai | date | |
+| status | enum(`aktif`,`nonaktif`), default `nonaktif` | hanya boleh **1 tahun ajaran berstatus aktif** di satu waktu — dipakai sistem sebagai default saat mencatat data baru |
+| timestamps | | |
+
+> Semua data transaksi baru (barang masuk, pengajuan, serah terima, kebutuhan ruangan) otomatis ditandai dengan `tahun_ajaran_id` yang sedang **aktif**, supaya laporan bisa difilter per tahun ajaran (lihat F6 & F10 di `05_FEATURES_SPEC.md`).
 
 ## Tabel `users`
 | Kolom | Tipe | Keterangan |
@@ -67,6 +84,7 @@ Field disusun mengikuti format pembukuan Ka. TU, ditambah beberapa kolom penduku
 | harga | decimal nullable | harga perolehan/satuan |
 | keterangan | text nullable | catatan umum tambahan |
 | ruangan_id | FK nullable → ruangan.id | **tambahan sistem**, lokasi barang saat ini (dibutuhkan untuk fitur Data Barang per Ruangan) |
+| tahun_ajaran_id | FK → tahun_ajaran.id | **tambahan sistem**, tahun ajaran saat barang dicatat/diperoleh |
 | status | enum(`aktif`,`dihapuskan`), default `aktif` | **tambahan sistem**, untuk barang write-off |
 | dicatat_oleh | FK → users.id | **tambahan sistem**, biasanya `ka_tu` |
 | timestamps | | |
@@ -79,7 +97,7 @@ Format: **Nama Barang | Jumlah Total | Kondisi Baik | Kondisi Rusak Ringan | Kon
 Ini dihasilkan dari **agregasi tabel `barang`**, dikelompokkan per `ruangan_id` + `nama_barang`:
 ```sql
 SELECT ruangan_id, nama_barang,
-       SUM(kuantitas) AS jumlah_total,
+       SUM(kuantitas) AS jumlah_tersedia,
        SUM(CASE WHEN kondisi = 'baik' THEN kuantitas ELSE 0 END) AS kondisi_baik,
        SUM(CASE WHEN kondisi = 'rusak_ringan' THEN kuantitas ELSE 0 END) AS rusak_ringan,
        SUM(CASE WHEN kondisi = 'rusak_berat' THEN kuantitas ELSE 0 END) AS rusak_berat
@@ -88,14 +106,27 @@ GROUP BY ruangan_id, nama_barang
 ```
 Kolom **Keterangan** & **Kebutuhan** tidak bisa dihitung otomatis (butuh input manual dari Ka. Prodi/pengguna ruangan), makanya disimpan di tabel terpisah `kebutuhan_ruangan` lalu di-`LEFT JOIN` ke hasil agregasi di atas.
 
+## 🔔 Logika Deteksi Kekurangan → Pemicu Permintaan
+Setiap baris rekap (`ruangan_id` + `nama_barang`) membandingkan **`jumlah_tersedia`** (hasil agregasi di atas) dengan **`kebutuhan_ruangan.jumlah_dibutuhkan`** (target ideal yang diisi Ka. Prodi):
+
+- Jika `jumlah_tersedia < jumlah_dibutuhkan` → status baris = **`kurang`**, sistem menampilkan badge "Kurang X unit" dan tombol **"Ajukan Permintaan"**
+- Jika `jumlah_tersedia >= jumlah_dibutuhkan` → status = **`cukup`**, tidak ada aksi lanjutan
+- Saat tombol "Ajukan Permintaan" diklik → sistem otomatis membuat draft di tabel `pengajuan` + `pengajuan_item`, terisi otomatis: nama barang, kategori, jumlah = selisih kekurangan → lanjut mengikuti **Alur Pengadaan Barang** (lihat `06_WORKFLOW_ALUR_BARANG.md`)
+- Baris yang sudah punya pengajuan aktif (belum `selesai`/`ditolak`) berstatus **`sudah_diajukan`**, agar tidak dobel pengajuan untuk kebutuhan yang sama
+
+> Catatan asumsi: "kebutuhan" di sini diartikan sebagai jumlah ideal/target yang seharusnya ada di ruangan tsb — jadi permintaan otomatis dipicu saat **stok tersedia lebih sedikit dari target kebutuhan** (kekurangan). Kalau logikanya beda dari yang dimaksud, tinggal kabari, tinggal dibalik kondisinya.
+
 ## Tabel `kebutuhan_ruangan`
 | Kolom | Tipe | Keterangan |
 |---|---|---|
 | id | PK | |
 | ruangan_id | FK → ruangan.id | |
+| tahun_ajaran_id | FK → tahun_ajaran.id | kebutuhan dinilai ulang tiap tahun ajaran |
 | nama_barang | varchar | nama barang yang dinilai (samakan penulisan dengan `barang.nama_barang` agar bisa di-join) |
+| jumlah_dibutuhkan | integer | jumlah ideal/target yang seharusnya ada di ruangan tsb |
 | keterangan | text nullable | catatan kondisi umum dari ruangan tsb |
-| kebutuhan | text nullable | kebutuhan tambahan, misal "butuh tambahan 5 kursi" — jadi dasar untuk fitur Alur Pengadaan Barang (F7) |
+| status | enum(`cukup`,`kurang`,`sudah_diajukan`), default `cukup` | dihitung ulang otomatis tiap kali data barang/kebutuhan berubah |
+| pengajuan_id | FK nullable → pengajuan.id | terisi otomatis begitu "Ajukan Permintaan" diklik, untuk lacak balik asal pengajuan |
 | dicatat_oleh | FK → users.id | biasanya `ka_prodi` |
 | tanggal | date | |
 | timestamps | | |
@@ -119,6 +150,7 @@ Kolom **Keterangan** & **Kebutuhan** tidak bisa dihitung otomatis (butuh input m
 |---|---|---|
 | id | PK | |
 | nomor_berita_acara | varchar unique | auto-generate |
+| tahun_ajaran_id | FK → tahun_ajaran.id | |
 | dari_user_id | FK → users.id | biasanya `waka_sarpras` |
 | ke_user_id | FK → users.id | penerima, biasanya `ka_prodi` |
 | tanggal_serah_terima | date | |
@@ -142,6 +174,9 @@ Kolom **Keterangan** & **Kebutuhan** tidak bisa dihitung otomatis (butuh input m
 | id | PK | |
 | kode_pengajuan | varchar unique | |
 | kategori | enum(`bos`,`komite`) | |
+| tahun_ajaran_id | FK → tahun_ajaran.id | |
+| sumber | enum(`manual`,`otomatis_kebutuhan_ruangan`), default `manual` | `otomatis_kebutuhan_ruangan` jika dibuat dari tombol "Ajukan Permintaan" di rekap ruangan |
+| kebutuhan_ruangan_id | FK nullable → kebutuhan_ruangan.id | terisi jika `sumber = otomatis_kebutuhan_ruangan` |
 | diajukan_oleh | FK → users.id | biasanya `ka_prodi`, bisa juga `waka_sarpras` |
 | status | enum(`diajukan`,`diteruskan_rapbs`,`disetujui`,`dibelanjakan`,`diserahkan_waka`,`diserahkan_pengguna`,`selesai`,`ditolak`), default `diajukan` | lihat detail alur di `06_WORKFLOW_ALUR_BARANG.md` |
 | catatan | text nullable | |
@@ -183,7 +218,8 @@ Kolom **Keterangan** & **Kebutuhan** tidak bisa dihitung otomatis (butuh input m
 
 ## Indexing yang Disarankan
 - `barang.kode_barang` — unique index (pencarian cepat)
-- `barang.kategori`, `barang.jenis_barang`, `barang.kondisi`, `barang.ruangan_id` — index untuk filter laporan & report per ruangan
-- `kebutuhan_ruangan.ruangan_id` — index untuk join ke report per ruangan
-- `pengajuan.status` — index untuk dashboard status
+- `barang.kategori`, `barang.jenis_barang`, `barang.kondisi`, `barang.ruangan_id`, `barang.tahun_ajaran_id` — index untuk filter laporan & report per ruangan/tahun ajaran
+- `kebutuhan_ruangan.ruangan_id`, `kebutuhan_ruangan.status` — index untuk join ke report per ruangan & filter "kurang"
+- `pengajuan.status`, `pengajuan.tahun_ajaran_id` — index untuk dashboard status & laporan per tahun ajaran
+- `tahun_ajaran.status` — index, hanya 1 baris boleh `aktif`
 - `users.role` — index untuk query per role

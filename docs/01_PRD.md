@@ -40,9 +40,10 @@ Contoh kombinasi: sebuah printer dari dana BOS akan tercatat sebagai `kategori: 
 3. Rekap Data (dari Ka. TU, Ka. Prodi, Waka Sarpras)
 4. Kondisi Barang (dengan foto 3 arah untuk barang rusak)
 5. Stok Barang
-6. Laporan
-7. Alur Pengadaan Barang (dari permintaan sampai penggunaan)
-8. Data Barang per Ruangan (rekap per ruangan: nama barang, jumlah, kondisi, keterangan, kebutuhan)
+6. Laporan (per tahun ajaran)
+7. Alur Pengadaan Barang (dari permintaan sampai penggunaan — manual maupun otomatis)
+8. Data Barang per Ruangan (rekap per ruangan: nama barang, jumlah, kondisi, keterangan, kebutuhan) dengan deteksi kekurangan otomatis yang memicu permintaan barang
+9. Manajemen Tahun Ajaran (setiap tahun ajaran punya laporannya sendiri)
 
 Detail tiap fitur ada di `05_FEATURES_SPEC.md`.
 

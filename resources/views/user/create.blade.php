@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Tambah User</h2>
+        <h2 class="font-semibold text-xl text-foreground leading-tight">Tambah User</h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="glass-card p-6">
                 <form method="POST" action="{{ route('user.store') }}">
                     @csrf
 
@@ -57,8 +57,8 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
-                        <a href="{{ route('user.index') }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Batal</a>
+                        <button type="submit" class="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">Simpan</button>
+                        <a href="{{ route('user.index') }}" class="px-4 py-2 bg-secondary text-foreground rounded hover:bg-accent">Batal</a>
                     </div>
                 </form>
             </div>

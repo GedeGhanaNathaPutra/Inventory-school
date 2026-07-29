@@ -1,15 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Detail Pengajuan</h2>
+        <h2 class="font-semibold text-xl text-foreground leading-tight">Detail Pengajuan</h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             @if (session('success'))
-                <div class="mb-4 px-4 py-2 bg-green-100 border border-green-400 text-green-700 rounded">{{ session('success') }}</div>
+                <div class="mb-4 px-4 py-2 bg-success/10 border border-success/30 text-success rounded">{{ session('success') }}</div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-4">
+            <div class="glass-card p-6 mb-4">
                 <table class="w-full text-sm">
                     <tr class="border-b"><td class="py-2 font-semibold w-48">Kode Pengajuan</td><td class="py-2 font-mono">{{ $pengajuan->kode_pengajuan }}</td></tr>
                     <tr class="border-b"><td class="py-2 font-semibold">Kategori</td><td class="py-2 uppercase">{{ $pengajuan->kategori }}</td></tr>
@@ -46,16 +46,16 @@
 
                     @if ($s === 'diteruskan_rapbs' && $role === 'kepsek')
                         <form method="POST" action="{{ route('pengajuan.approve', $pengajuan) }}">@csrf
-                            <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" onclick="return confirm('Setujui anggaran ini?')">Setujui</button>
+                            <button class="px-4 py-2 bg-success text-success-foreground rounded hover:bg-success/90" onclick="return confirm('Setujui anggaran ini?')">Setujui</button>
                         </form>
                         <form method="POST" action="{{ route('pengajuan.reject', $pengajuan) }}">@csrf
-                            <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" onclick="return confirm('Tolak anggaran ini?')">Tolak</button>
+                            <button class="px-4 py-2 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90" onclick="return confirm('Tolak anggaran ini?')">Tolak</button>
                         </form>
                     @endif
 
                     @if ($s === 'disetujui' && in_array($role, ['waka_sarpras', 'ka_tu']))
                         <form method="POST" action="{{ route('pengajuan.mark-dibelanjakan', $pengajuan) }}">@csrf
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sudah Dibelanjakan</button>
+                            <button class="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">Sudah Dibelanjakan</button>
                         </form>
                     @endif
 
@@ -77,20 +77,20 @@
                         </form>
                     @endif
 
-                    <a href="{{ route('pengajuan.index') }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Kembali</a>
+                    <a href="{{ route('pengajuan.index') }}" class="px-4 py-2 bg-secondary text-foreground rounded hover:bg-accent">Kembali</a>
                 </div>
             </div>
 
             {{-- Logs --}}
-            <div class="bg-white rounded shadow-sm p-4">
+            <div class="glass-card p-4">
                 <h3 class="font-semibold mb-2">Riwayat Status</h3>
                 @forelse ($pengajuan->logs as $log)
                     <div class="flex justify-between text-sm border-b py-1">
                         <span>{{ str_replace('_', ' ', $log->status) }}</span>
-                        <span class="text-gray-500">{{ $log->updatedBy?->name }} — {{ $log->keterangan ?? '' }}</span>
+                        <span class="text-muted-foreground">{{ $log->updatedBy?->name }} — {{ $log->keterangan ?? '' }}</span>
                     </div>
                 @empty
-                    <p class="text-sm text-gray-500">Belum ada riwayat.</p>
+                    <p class="text-sm text-muted-foreground">Belum ada riwayat.</p>
                 @endforelse
             </div>
         </div>

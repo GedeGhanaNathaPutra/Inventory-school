@@ -92,27 +92,36 @@
 
 **Jenis laporan**:
 - Laporan per kategori (BOS vs Komite)
+- Laporan per jenis barang (Inventaris vs Non-Inventaris)
 - Laporan per kondisi (baik / rusak ringan / sedang / berat)
-- Laporan per lokasi/prodi
+- Laporan per lokasi/ruangan/prodi
 - Laporan status pengadaan (progress alur pengajuan)
+- Laporan barang yang berstatus "kurang" (butuh permintaan) per ruangan
 - Export ke PDF & Excel
+
+**Aturan**:
+- Semua jenis laporan di atas punya **filter Tahun Ajaran** — laporan hanya menampilkan data yang tercatat pada tahun ajaran terpilih, sehingga tiap tahun ajaran punya laporannya sendiri dan tidak tercampur dengan tahun lain
+- Default filter = tahun ajaran yang sedang `aktif`, tapi bisa diganti untuk lihat laporan tahun sebelumnya
 
 **Acceptance criteria**:
 - [ ] Semua jenis laporan di atas bisa di-export ke PDF dan Excel
-- [ ] Laporan bisa difilter berdasarkan rentang tanggal
+- [ ] Laporan bisa difilter berdasarkan rentang tanggal dan Tahun Ajaran
 
 ---
 
 ## F7 — Alur Pengadaan Barang (Procurement Workflow)
 **Aktor**: Ka. Prodi (ajukan), Waka Sarpras (approve & proses), Kepsek (approval anggaran), Ka. TU (catat final)
 
-**Deskripsi**: Digitalisasi alur pengajuan barang baru dari permintaan sampai barang diterima & digunakan.
+**Deskripsi**: Digitalisasi alur pengajuan barang baru dari permintaan sampai barang diterima & digunakan. Pengajuan bisa muncul dari 2 sumber:
+1. **Manual** — Ka. Prodi/Waka Sarpras membuat pengajuan baru langsung
+2. **Otomatis** — dipicu dari fitur Data Barang per Ruangan (F8) saat sistem mendeteksi `jumlah_tersedia < jumlah_dibutuhkan` di suatu ruangan, lalu Ka. Prodi klik tombol "Ajukan Permintaan"
 
 Detail state & diagram lengkap ada di `06_WORKFLOW_ALUR_BARANG.md`.
 
 **Acceptance criteria**:
 - [ ] Setiap pengajuan bisa dilacak statusnya real-time oleh semua pihak terkait
 - [ ] Ada riwayat/log setiap perubahan status pengajuan
+- [ ] Pengajuan yang dibuat otomatis dari F8 tetap tercatat asalnya (`kebutuhan_ruangan_id`) dan formnya terisi otomatis (nama barang, kategori, jumlah kekurangan)
 
 ---
 
@@ -120,19 +129,22 @@ Detail state & diagram lengkap ada di `06_WORKFLOW_ALUR_BARANG.md`.
 **Aktor**: Ka. TU, Waka Sarpras (lihat semua ruangan), Ka. Prodi (lihat & isi kebutuhan untuk ruangan di prodinya)
 
 **Deskripsi**: Rekap barang per ruangan dalam format kartu, menampilkan untuk setiap nama barang di ruangan tersebut:
-- Jumlah total
+- Jumlah tersedia
 - Breakdown kondisi: Baik / Rusak Ringan / Rusak Berat
 - Keterangan
-- Kebutuhan (kekurangan/permintaan tambahan barang di ruangan itu)
+- Jumlah dibutuhkan (target ideal) & status kecukupan (Cukup / Kurang / Sudah Diajukan)
 
 **Aturan**:
 - Jumlah & breakdown kondisi dihitung otomatis dari data di F1 (tabel `barang`, dikelompokkan per ruangan + nama barang)
-- Kolom "Keterangan" & "Kebutuhan" diisi manual oleh Ka. Prodi/penanggung jawab ruangan
-- "Kebutuhan" yang diisi di sini bisa langsung dijadikan dasar untuk membuat pengajuan barang baru (terhubung ke F7)
+- Kolom "Keterangan" & "Jumlah Dibutuhkan" diisi manual oleh Ka. Prodi/penanggung jawab ruangan
+- **Deteksi kekurangan otomatis**: begitu `jumlah_tersedia < jumlah_dibutuhkan`, sistem menampilkan badge "Kurang X unit" dan tombol **"Ajukan Permintaan"**
+- Klik "Ajukan Permintaan" langsung membuat draft pengajuan (F7) yang otomatis terisi nama barang, kategori, dan jumlah kekurangan, lalu mengikuti Alur Pengadaan Barang (permintaan → Waka Sarpras/Ka. Prodi → RAPBS → dibelanjakan → diserahkan ke Waka Sarpras → diberikan ke bagian pengguna → didata)
+- Baris yang sudah punya pengajuan aktif berstatus "Sudah Diajukan" agar tidak dobel pengajuan
 
 **Acceptance criteria**:
 - [ ] Setiap ruangan punya halaman rekap yang menampilkan seluruh barang di ruangan itu dengan breakdown kondisi
-- [ ] Ka. Prodi bisa mengisi/update kolom keterangan & kebutuhan untuk ruangan yang menjadi tanggung jawabnya
+- [ ] Ka. Prodi bisa mengisi/update jumlah dibutuhkan untuk ruangan yang menjadi tanggung jawabnya
+- [ ] Sistem otomatis menandai baris "Kurang" dan memunculkan tombol Ajukan Permintaan saat stok < kebutuhan
 - [ ] Rekap ini bisa di-export ke PDF/Excel per ruangan (terhubung ke F6)
 
 ---
@@ -145,3 +157,19 @@ Detail state & diagram lengkap ada di `06_WORKFLOW_ALUR_BARANG.md`.
 **Acceptance criteria**:
 - [ ] User baru wajib diberi salah satu dari 4 role saat dibuat
 - [ ] User dengan role `ka_prodi` wajib terhubung ke satu `prodi`
+
+---
+
+## F10 — Manajemen Tahun Ajaran
+**Aktor**: Ka. TU (kelola), Kepsek (lihat)
+
+**Deskripsi**: Kelola daftar tahun ajaran (misal `2025/2026`, `2026/2027`) yang jadi dasar pengelompokan seluruh data transaksi (barang, kebutuhan ruangan, pengajuan, serah terima) sehingga tiap tahun ajaran punya laporannya sendiri-sendiri.
+
+**Aturan**:
+- Hanya boleh **1 tahun ajaran berstatus `aktif`** dalam satu waktu
+- Data baru (barang masuk, kebutuhan ruangan, pengajuan, serah terima) otomatis ditandai dengan tahun ajaran yang sedang aktif
+- Saat tahun ajaran baru dimulai, Ka. TU tinggal mengaktifkan tahun ajaran baru — data lama tetap tersimpan & tetap bisa dilihat lewat filter di F6
+
+**Acceptance criteria**:
+- [ ] Hanya 1 tahun ajaran yang bisa berstatus aktif pada satu waktu (validasi sistem)
+- [ ] Semua transaksi baru otomatis terhubung ke tahun ajaran aktif tanpa perlu input manual

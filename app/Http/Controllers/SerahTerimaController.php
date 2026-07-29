@@ -22,7 +22,10 @@ class SerahTerimaController extends Controller
         }
 
         $serahTerimas = $query->latest()->paginate(20);
-        return view('serah-terima.index', compact('serahTerimas'));
+        $users = User::where('is_active', true)->whereIn('role', ['ka_prodi', 'waka_sarpras'])->orderBy('name')->get();
+        $ruangans = Ruangan::orderBy('nama_ruangan')->get();
+        $barangs = Barang::where('status', 'aktif')->orderBy('nama_barang')->get();
+        return view('serah-terima.index', compact('serahTerimas', 'users', 'ruangans', 'barangs'));
     }
 
     public function create()

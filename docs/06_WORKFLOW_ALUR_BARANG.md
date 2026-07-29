@@ -67,3 +67,26 @@ flowchart TD
 - **Waka Sarpras** — status distribusi/serah terima barang
 
 Sistem menampilkan **dashboard perbandingan** ketiga sumber data ini, dan menandai barang yang datanya tidak sinkron (misal: tercatat di data Ka. TU tapi belum dikonfirmasi oleh Ka. Prodi terkait) supaya bisa segera ditindaklanjuti oleh Waka Sarpras/Kepsek.
+
+## 5. Alur Deteksi Kekurangan Barang → Permintaan Otomatis
+
+Terhubung ke fitur Data Barang per Ruangan (F8). Setiap kali Ka. Prodi mengisi/update `jumlah_dibutuhkan` untuk suatu barang di ruangannya, sistem otomatis membandingkan dengan stok yang tersedia di ruangan itu.
+
+```mermaid
+flowchart TD
+    A[Ka. Prodi isi/update jumlah kebutuhan di ruangan] --> B[Sistem hitung jumlah tersedia vs jumlah dibutuhkan]
+    B --> C{Tersedia < Dibutuhkan?}
+    C -- Tidak, cukup --> D[Status: Cukup - tidak ada aksi]
+    C -- Ya, kurang --> E[Status: Kurang - tampil badge & tombol Ajukan Permintaan]
+    E --> F[Ka. Prodi klik Ajukan Permintaan]
+    F --> G[Sistem buat draft pengajuan otomatis: nama barang, kategori, jumlah = selisih kekurangan]
+    G --> H[Lanjut ke Alur Pengadaan Barang - lihat bagian 1]
+```
+
+**Catatan**:
+- Selama pengajuan masih berjalan (belum berstatus `selesai`/`ditolak`), baris kebutuhan tsb berstatus `sudah_diajukan` agar tidak dobel pengajuan untuk kebutuhan yang sama
+- Setelah pengajuan `selesai` dan barang baru tercatat di ruangan tsb, sistem otomatis menghitung ulang status (`cukup`/`kurang`) di periode berikutnya
+
+## 6. Laporan per Tahun Ajaran
+
+Setiap tahun ajaran (`tahun_ajaran`) punya set laporannya sendiri — data barang, kebutuhan ruangan, dan pengajuan yang dicatat dalam periode tahun ajaran tersebut otomatis ditandai `tahun_ajaran_id` yang sedang aktif. Di halaman Laporan (F6), tersedia filter dropdown "Tahun Ajaran" sehingga Kepsek/Waka Sarpras/Ka. TU bisa membandingkan laporan antar tahun (misal: laporan 2025/2026 vs 2026/2027) tanpa data tercampur.

@@ -1,3 +1,141 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[x-cloak] { display: none !important; }
+
+@layer base {
+  :root {
+    --background: 210 44% 95%;
+    --foreground: 210 40% 15%;
+    --primary: 210 55% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 35% 90%;
+    --secondary-foreground: 210 40% 15%;
+    --muted: 210 30% 92%;
+    --muted-foreground: 210 20% 50%;
+    --accent: 210 50% 54%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 50% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 80% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 210 30% 84%;
+    --input: 210 30% 84%;
+    --ring: 210 55% 58%;
+    --radius: 0.75rem;
+
+    --neu-bg: #e8f0f8;
+    --neu-shadow-light: rgba(255, 255, 255, 0.8);
+    --neu-shadow-dark: rgba(163, 177, 198, 0.5);
+    --neu-inset-bg: #d5e0ec;
+    --neu-radius: 14px;
+  }
+
+  .dark {
+    --background: 210 30% 10%;
+    --foreground: 210 20% 92%;
+    --primary: 210 45% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 25% 16%;
+    --secondary-foreground: 210 20% 92%;
+    --muted: 210 25% 14%;
+    --muted-foreground: 210 15% 60%;
+    --accent: 210 35% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 60% 35%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 40% 35%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 55% 40%;
+    --warning-foreground: 0 0% 100%;
+    --border: 210 20% 20%;
+    --input: 210 20% 20%;
+    --ring: 210 45% 50%;
+  }
+}
+
+@layer components {
+  .neu {
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    box-shadow:
+      -7px -7px 16px var(--neu-shadow-light),
+      7px 7px 16px var(--neu-shadow-dark);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .neu-card {
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    box-shadow:
+      -7px -7px 16px var(--neu-shadow-light),
+      7px 7px 16px var(--neu-shadow-dark);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .neu-card:hover {
+    box-shadow:
+      -9px -9px 20px var(--neu-shadow-light),
+      9px 9px 20px var(--neu-shadow-dark);
+    transform: translateY(-2px);
+  }
+
+  .neu-inset {
+    background: var(--neu-inset-bg);
+    border-radius: var(--neu-radius);
+    box-shadow:
+      inset -4px -4px 8px var(--neu-shadow-light),
+      inset 4px 4px 8px var(--neu-shadow-dark);
+  }
+
+  .neu-pressed:active {
+    transform: scale(0.97);
+  }
+
+  .neu-sidebar {
+    background: var(--neu-bg);
+    box-shadow:
+      inset -1px 0 0 rgba(255, 255, 255, 0.6),
+      2px 0 12px rgba(163, 177, 198, 0.3);
+  }
+
+  .dark .neu-sidebar {
+    background: hsl(210 30% 10%);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .dark .neu {
+    background: hsl(210 30% 10%);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.25),
+      0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark .neu-card {
+    background: hsl(210 25% 12%);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.25),
+      0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark .neu-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  .nav-link-active {
+    background: var(--neu-inset-bg);
+    box-shadow:
+      inset -2px -2px 4px var(--neu-shadow-light),
+      inset 2px 2px 4px var(--neu-shadow-dark);
+    border-radius: 10px;
+  }
+
+  .dark .nav-link-active {
+    background: hsl(210 25% 16%);
+    box-shadow:
+      inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+}

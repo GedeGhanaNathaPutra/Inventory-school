@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Riwayat Mutasi Stok</h2>
+        <h2 class="font-semibold text-xl text-foreground leading-tight">Riwayat Mutasi Stok</h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="glass-card p-6">
                 <p class="mb-4 text-sm">
                     Barang: <strong>{{ $barang->kode_barang }} — {{ $barang->nama_barang }}</strong><br>
                     Stok Awal: <strong>{{ $barang->kuantitas }}</strong> |
@@ -40,12 +40,12 @@
                                 <td class="py-2 px-1">{{ $m->keterangan ?? '-' }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="py-4 text-center text-gray-500">Belum ada mutasi stok.</td></tr>
+                            <tr><td colspan="5" class="py-4 text-center text-muted-foreground">Belum ada mutasi stok.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
 
-                <a href="{{ route('stok.index') }}" class="mt-4 inline-block px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm">Kembali</a>
+                <a href="{{ route('stok.index') }}" class="mt-4 inline-block px-4 py-2 bg-secondary text-foreground rounded hover:bg-accent text-sm">Kembali</a>
             </div>
         </div>
     </div>

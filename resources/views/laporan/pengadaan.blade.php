@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Laporan Status Pengadaan</h2>
+        <h2 class="font-semibold text-xl text-foreground leading-tight">Laporan Status Pengadaan</h2>
     </x-slot>
 
     <div class="py-6">
@@ -22,19 +22,19 @@
                     <option value="bos" @selected(request('kategori') === 'bos')>BOS</option>
                     <option value="komite" @selected(request('kategori') === 'komite')>Komite</option>
                 </select>
-                <button type="submit" class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">Tampilkan</button>
-                <button type="submit" name="export" value="pdf" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">PDF</button>
-                <button type="submit" name="export" value="excel" class="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">Excel</button>
+                <button type="submit" class="px-3 py-1 bg-secondary text-foreground rounded text-sm hover:bg-accent">Tampilkan</button>
+                <button type="submit" name="export" value="pdf" class="px-3 py-1 bg-destructive text-destructive-foreground rounded text-sm hover:bg-destructive/90">PDF</button>
+                <button type="submit" name="export" value="excel" class="px-3 py-1 bg-success text-success-foreground rounded text-sm hover:bg-success/90">Excel</button>
             </form>
 
-            <div class="bg-white rounded shadow-sm p-4">
+            <div class="glass-card p-4">
                 <table class="w-full text-sm">
                     <thead><tr class="border-b text-left"><th class="py-1">Kode</th><th class="py-1">Kategori</th><th class="py-1">Pengaju</th><th class="py-1">Status</th><th class="py-1">Item</th><th class="py-1">Tanggal</th></tr></thead>
                     <tbody>
                         @forelse ($pengajuans as $p)
                             <tr class="border-b"><td class="py-1 font-mono">{{ $p->kode_pengajuan }}</td><td class="py-1 uppercase">{{ $p->kategori }}</td><td class="py-1">{{ $p->diajukanOleh?->name }}</td><td class="py-1">{{ str_replace('_', ' ', $p->status) }}</td><td class="py-1">{{ $p->items->count() }}</td><td class="py-1">{{ $p->created_at?->format('Y-m-d') }}</td></tr>
                         @empty
-                            <tr><td colspan="6" class="py-4 text-center text-gray-500">Belum ada pengajuan.</td></tr>
+                            <tr><td colspan="6" class="py-4 text-center text-muted-foreground">Belum ada pengajuan.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

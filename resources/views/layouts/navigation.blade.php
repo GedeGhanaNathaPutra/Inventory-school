@@ -1,160 +1,56 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+@php
+$links = [
+    ['route' => 'dashboard', 'label' => 'Dashboard', 'pattern' => 'dashboard'],
+    ['route' => 'barang.index', 'label' => 'Data Barang', 'pattern' => 'barang.*'],
+    ['route' => 'serah-terima.index', 'label' => 'Serah Terima', 'pattern' => 'serah-terima.*'],
+    ['route' => 'rekap.3-pihak', 'label' => 'Rekap 3 Pihak', 'pattern' => 'rekap.*'],
+    ['route' => 'stok.index', 'label' => 'Stok Barang', 'pattern' => 'stok.*'],
+    ['route' => 'pengajuan.index', 'label' => 'Pengajuan', 'pattern' => 'pengajuan.*', 'roles' => ['ka_prodi', 'waka_sarpras', 'kepsek', 'ka_tu']],
+    ['route' => 'kartu.index', 'label' => 'Kartu Inventaris', 'pattern' => 'kartu.*'],
+    ['route' => 'laporan.index', 'label' => 'Laporan', 'pattern' => 'laporan.*', 'exclude' => ['ka_prodi']],
+    ['route' => 'user.index', 'label' => 'User', 'pattern' => 'user.*', 'roles' => ['kepsek', 'ka_tu']],
+];
+@endphp
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('barang.index')" :active="request()->routeIs('barang.*')">
-                        {{ __('Data Barang') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('serah-terima.index')" :active="request()->routeIs('serah-terima.*')">
-                        {{ __('Serah Terima') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('rekap.3-pihak')" :active="request()->routeIs('rekap.*')">
-                        {{ __('Rekap 3 Pihak') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('stok.index')" :active="request()->routeIs('stok.*')">
-                        {{ __('Stok Barang') }}
-                    </x-nav-link>
-                    @if (!in_array(Auth::user()->role, ['ka_prodi']))
-                        <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
-                            {{ __('Laporan') }}
-                        </x-nav-link>
-                    @endif
-                    @if (in_array(Auth::user()->role, ['ka_prodi', 'waka_sarpras', 'kepsek', 'ka_tu']))
-                        <x-nav-link :href="route('pengajuan.index')" :active="request()->routeIs('pengajuan.*')">
-                            {{ __('Pengajuan') }}
-                        </x-nav-link>
-                    @endif
-                    <x-nav-link :href="route('kartu.index')" :active="request()->routeIs('kartu.*')">
-                        {{ __('Kartu Inventaris') }}
-                    </x-nav-link>
-                    @if (in_array(Auth::user()->role, ['kepsek', 'ka_tu']))
-                        <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.*')">
-                            {{ __('User') }}
-                        </x-nav-link>
-                    @endif
-                </div>
-            </div>
+<nav x-data="{ open: false }" class="fixed inset-y-0 left-0 z-50 w-64 glass-nav flex flex-col">
+    {{-- Logo --}}
+    <div class="shrink-0 flex items-center h-16 px-4 border-b border-border">
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+            <x-application-logo class="block h-9 w-auto fill-current text-foreground" />
+        </a>
+    </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+    {{-- Navigation Links --}}
+    <div class="flex-1 overflow-y-auto py-4 space-y-1 px-2">
+        @foreach ($links as $link)
+            @if (isset($link['roles']) && !in_array(Auth::user()->role, $link['roles']))
+                @continue
+            @endif
+            @if (isset($link['exclude']) && in_array(Auth::user()->role, $link['exclude']))
+                @continue
+            @endif
+            <x-nav-link :href="route($link['route'])" :active="request()->routeIs($link['pattern'])">
+                {{ __($link['label']) }}
+            </x-nav-link>
+        @endforeach
+    </div>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    {{-- User & Logout --}}
+    <div class="shrink-0 border-t border-border p-4">
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-foreground truncate">{{ Auth::user()->name }}</div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="text-sm text-muted-foreground hover:text-foreground transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                 </button>
-            </div>
+            </form>
         </div>
+        <a href="{{ route('profile.edit') }}" class="text-xs text-muted-foreground hover:text-foreground mt-1 block">{{ Auth::user()->email }}</a>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('barang.index')" :active="request()->routeIs('barang.*')">
-                {{ __('Data Barang') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('serah-terima.index')" :active="request()->routeIs('serah-terima.*')">
-                {{ __('Serah Terima') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('rekap.3-pihak')" :active="request()->routeIs('rekap.*')">
-                {{ __('Rekap 3 Pihak') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('stok.index')" :active="request()->routeIs('stok.*')">
-                {{ __('Stok Barang') }}
-            </x-responsive-nav-link>
-            @if (!in_array(Auth::user()->role, ['ka_prodi']))
-                <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
-                    {{ __('Laporan') }}
-                </x-responsive-nav-link>
-            @endif
-            @if (in_array(Auth::user()->role, ['ka_prodi', 'waka_sarpras', 'kepsek', 'ka_tu']))
-                <x-responsive-nav-link :href="route('pengajuan.index')" :active="request()->routeIs('pengajuan.*')">
-                    {{ __('Pengajuan') }}
-                </x-responsive-nav-link>
-            @endif
-            <x-responsive-nav-link :href="route('kartu.index')" :active="request()->routeIs('kartu.*')">
-                {{ __('Kartu Inventaris') }}
-            </x-responsive-nav-link>
-            @if (in_array(Auth::user()->role, ['kepsek', 'ka_tu']))
-                <x-responsive-nav-link :href="route('user.index')" :active="request()->routeIs('user.*')">
-                    {{ __('User') }}
-                </x-responsive-nav-link>
-            @endif
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
-    </div>
+    {{-- Mobile overlay --}}
+    <div x-show="open" x-cloak @@click="open = false" class="fixed inset-0 bg-black/50 sm:hidden" style="display: none;"></div>
 </nav>

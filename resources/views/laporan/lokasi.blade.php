@@ -1,17 +1,17 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Laporan Per Lokasi / Prodi</h2>
+        <h2 class="font-semibold text-xl text-foreground leading-tight">Laporan Per Lokasi / Prodi</h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4 flex gap-2">
-                <a href="{{ route('laporan.lokasi', ['export' => 'pdf']) }}" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">PDF</a>
-                <a href="{{ route('laporan.lokasi', ['export' => 'excel']) }}" class="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">Excel</a>
+                <a href="{{ route('laporan.lokasi', ['export' => 'pdf']) }}" class="px-3 py-1 bg-destructive text-destructive-foreground rounded text-sm hover:bg-destructive/90">PDF</a>
+                <a href="{{ route('laporan.lokasi', ['export' => 'excel']) }}" class="px-3 py-1 bg-success text-success-foreground rounded text-sm hover:bg-success/90">Excel</a>
             </div>
 
             @foreach ($prodis as $prodi)
-                <div class="bg-white rounded shadow-sm p-4 mb-4">
+                <div class="glass-card p-4 mb-4">
                     <h3 class="font-semibold mb-2">{{ $prodi->nama_prodi }}</h3>
                     @foreach ($prodi->ruangans as $ruangan)
                         <div class="ml-4 mb-2">

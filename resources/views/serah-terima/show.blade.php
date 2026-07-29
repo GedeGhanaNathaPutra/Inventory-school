@@ -1,18 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Detail Serah Terima</h2>
+        <h2 class="font-semibold text-xl text-foreground leading-tight">Detail Serah Terima</h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             @if (session('success'))
-                <div class="mb-4 px-4 py-2 bg-green-100 border border-green-400 text-green-700 rounded">{{ session('success') }}</div>
+                <div class="mb-4 px-4 py-2 bg-success/10 border border-success/30 text-success rounded">{{ session('success') }}</div>
             @endif
             @if (session('error'))
-                <div class="mb-4 px-4 py-2 bg-red-100 border border-red-400 text-red-700 rounded">{{ session('error') }}</div>
+                <div class="mb-4 px-4 py-2 bg-destructive/10 border border-destructive/30 text-destructive rounded">{{ session('error') }}</div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="glass-card p-6">
                 <table class="w-full text-sm">
                     <tr class="border-b"><td class="py-2 font-semibold w-48">No. Berita Acara</td><td class="py-2 font-mono">{{ $serahTerima->nomor_berita_acara }}</td></tr>
                     <tr class="border-b"><td class="py-2 font-semibold">Tanggal</td><td class="py-2">{{ $serahTerima->tanggal_serah_terima }}</td></tr>
@@ -49,11 +49,11 @@
                     @if ($serahTerima->status === 'draft' && Auth::id() === $serahTerima->ke_user_id)
                         <form method="POST" action="{{ route('serah-terima.acknowledge', $serahTerima) }}">
                             @csrf
-                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" onclick="return confirm('Terima semua barang ini? Lokasi barang akan otomatis diperbarui.')">Terima Barang</button>
+                            <button type="submit" class="px-4 py-2 bg-success text-success-foreground rounded hover:bg-success/90" onclick="return confirm('Terima semua barang ini? Lokasi barang akan otomatis diperbarui.')">Terima Barang</button>
                         </form>
                     @endif
-                    <a href="{{ route('serah-terima.pdf', $serahTerima) }}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Download PDF</a>
-                    <a href="{{ route('serah-terima.index') }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Kembali</a>
+                    <a href="{{ route('serah-terima.pdf', $serahTerima) }}" class="px-4 py-2 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90">Download PDF</a>
+                    <a href="{{ route('serah-terima.index') }}" class="px-4 py-2 bg-secondary text-foreground rounded hover:bg-accent">Kembali</a>
                 </div>
             </div>
         </div>
