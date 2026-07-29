@@ -17,7 +17,7 @@ class Barang extends Model
         'keterangan_nomor_ukuran', 'merek_type', 'kuantitas',
         'nama_satuan', 'kategori', 'jenis_barang',
         'kelengkapan_dokumen', 'kondisi', 'harga', 'keterangan',
-        'ruangan_id', 'status', 'dicatat_oleh',
+        'ruangan_id', 'tahun_ajaran_id', 'status', 'dicatat_oleh',
     ];
 
     protected function casts(): array
@@ -36,6 +36,11 @@ class Barang extends Model
     public function dicatatOleh(): BelongsTo
     {
         return $this->belongsTo(User::class, 'dicatat_oleh');
+    }
+
+    public function tahunAjaran(): BelongsTo
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
     }
 
     public function kondisiHistories(): HasMany

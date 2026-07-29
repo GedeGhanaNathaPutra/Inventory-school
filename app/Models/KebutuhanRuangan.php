@@ -10,8 +10,9 @@ class KebutuhanRuangan extends Model
     protected $table = 'kebutuhan_ruangan';
 
     protected $fillable = [
-        'ruangan_id', 'nama_barang', 'keterangan',
-        'kebutuhan', 'dicatat_oleh', 'tanggal',
+        'ruangan_id', 'tahun_ajaran_id', 'nama_barang',
+        'jumlah_dibutuhkan', 'keterangan', 'kebutuhan',
+        'status', 'pengajuan_id', 'dicatat_oleh', 'tanggal',
     ];
 
     protected function casts(): array
@@ -24,8 +25,18 @@ class KebutuhanRuangan extends Model
         return $this->belongsTo(Ruangan::class, 'ruangan_id');
     }
 
+    public function tahunAjaran(): BelongsTo
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
+    }
+
     public function dicatatOleh(): BelongsTo
     {
         return $this->belongsTo(User::class, 'dicatat_oleh');
+    }
+
+    public function pengajuan(): BelongsTo
+    {
+        return $this->belongsTo(Pengajuan::class, 'pengajuan_id');
     }
 }

@@ -13,7 +13,7 @@ class SerahTerima extends Model
     protected $table = 'serah_terima';
 
     protected $fillable = [
-        'nomor_berita_acara', 'dari_user_id', 'ke_user_id',
+        'nomor_berita_acara', 'tahun_ajaran_id', 'dari_user_id', 'ke_user_id',
         'ruangan_tujuan_id', 'tanggal_serah_terima', 'status', 'catatan', 'dibuat_oleh',
     ];
 
@@ -35,6 +35,11 @@ class SerahTerima extends Model
     public function dibuatOleh(): BelongsTo
     {
         return $this->belongsTo(User::class, 'dibuat_oleh');
+    }
+
+    public function tahunAjaran(): BelongsTo
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
     }
 
     public function ruanganTujuan(): BelongsTo

@@ -13,13 +13,24 @@ class Pengajuan extends Model
     protected $table = 'pengajuan';
 
     protected $fillable = [
-        'kode_pengajuan', 'kategori', 'diajukan_oleh',
+        'kode_pengajuan', 'kategori', 'tahun_ajaran_id', 'sumber',
+        'kebutuhan_ruangan_id', 'diajukan_oleh',
         'status', 'catatan',
     ];
 
     public function diajukanOleh(): BelongsTo
     {
         return $this->belongsTo(User::class, 'diajukan_oleh');
+    }
+
+    public function tahunAjaran(): BelongsTo
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
+    }
+
+    public function kebutuhanRuangan(): BelongsTo
+    {
+        return $this->belongsTo(KebutuhanRuangan::class, 'kebutuhan_ruangan_id');
     }
 
     public function items(): HasMany
